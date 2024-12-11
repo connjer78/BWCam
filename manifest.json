@@ -2,13 +2,16 @@
   "manifest_version": 3,
   "name": "Nest Camera to Apple TV",
   "version": "1.0",
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "background"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icon16.png",
-      "48": "icon48.png",
-      "128": "icon128.png"
+      "16": "assets/CamIcon.png",
+      "48": "assets/CamIcon.png",
+      "128": "assets/CamIcon.png"
     }
   }
 }
