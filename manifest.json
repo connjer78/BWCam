@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Nest Camera to Apple TV",
+  "name": "BWCam Feed",
   "version": "1.0",
   "permissions": ["activeTab", "background"],
   "background": {
