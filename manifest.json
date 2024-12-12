@@ -2,7 +2,17 @@
   "manifest_version": 3,
   "name": "BWCam Feed",
   "version": "1.0",
-  "permissions": ["activeTab", "background"],
+  "permissions": [
+    "activeTab",
+    "background",
+    "identity"
+  ],
+  "oauth2": {
+    "client_id": "562878681272-osamp8vg8f6pjjq42fro906p6mu53ppm.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/sdm.service"
+    ]
+  },
   "background": {
     "service_worker": "background.js"
   },

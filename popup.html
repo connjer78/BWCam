@@ -2,11 +2,26 @@
 <html>
 <head>
     <title>Nest Camera Feed</title>
-    <script src="https://cdn.rawgit.com/adamvr/airplay-js/master/airplay.js"></script>
-    <script src="popup.js"></script>
+    <style>
+        body {
+            width: 320px;
+            padding: 10px;
+        }
+        #videoFeed {
+            width: 100%;
+            display: none;
+        }
+        .error {
+            color: red;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Nest Camera Feed</h1>
     <button id="displayFeed">Display Feed</button>
+    <video id="videoFeed" controls autoplay></video>
+    <div id="errorMessage" class="error"></div>
+    <script src="popup.js"></script>
 </body>
 </html>
