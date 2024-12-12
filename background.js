@@ -23,7 +23,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function getAuthToken() {
     return new Promise((resolve, reject) => {
-        chrome.identity.getAuthToken({ interactive: true }, function(token) {
+        chrome.identity.getAuthToken({ 
+            interactive: true,
+            scopes: ['https://www.googleapis.com/auth/sdm.service']
+        }, function(token) {
             if (chrome.runtime.lastError) {
                 console.error('Auth error:', chrome.runtime.lastError);
                 reject(chrome.runtime.lastError);
@@ -38,23 +41,59 @@ async function fetchCameraFeed(token) {
     try {
         console.log('Fetching camera feed with token:', token);
         const response = await fetch(
-            'https://smartdevicemanagement.googleapis.com/v1/enterprises/bwcam-feed/devices',
+            'https://smartdevicemanagement.googleapis.com/v1/enterprises/439b04a4-2b5d-484e-ac5a-5aa3c281b2a1/devices',
             {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
             }
         );
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('API Error Response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
         }
         
         const data = await response.json();
-        console.log('API response:', data);
+        console.log('Full API response:', JSON.stringify(data, null, 2));
         
-        // This is a placeholder - you'll need to extract the actual camera feed URL
-        return data;
+        if (!data.devices) {
+            throw new Error('No devices found in the API response');
+        }
+        
+        // Find the camera device in the response
+        const camera = data.devices.find(device => device.type === 'sdm.devices.types.CAMERA');
+        
+        if (!camera) {
+            throw new Error('No camera found in the device list');
+        }
+
+        console.log('Found camera:', JSON.stringify(camera, null, 2));
+
+        // Generate camera stream request
+        const streamResponse = await fetch(
+            `https://smartdevicemanagement.googleapis.com/v1/${camera.name}:generateRtspStream`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if (!streamResponse.ok) {
+            const errorText = await streamResponse.text();
+            console.error('Stream API Error Response:', errorText);
+            throw new Error(`HTTP error! status: ${streamResponse.status}, details: ${errorText}`);
+        }
+
+        const streamData = await streamResponse.json();
+        console.log('Stream response:', streamData);
+        
+        return streamData.streamUrls.rtspUrl;
     } catch (error) {
         console.error('Feed fetch error:', error);
         throw error;
