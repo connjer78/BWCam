@@ -41,7 +41,7 @@ async function fetchCameraFeed(token) {
     try {
         console.log('Fetching camera feed with token:', token);
         const response = await fetch(
-            'https://smartdevicemanagement.googleapis.com/v1/enterprises/439b04a4-2b5d-484e-ac5a-5aa3c281b2a1/devices',
+            'https://smartdevicemanagement.googleapis.com/v1/enterprises/project-id-439b04a4-2b5d-484e-ac5a-5aa3c281b2a1/devices',
             {
                 headers: {
                     'Authorization': `Bearer ${token}`,
